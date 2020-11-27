@@ -4,7 +4,7 @@ export class AddBallsBasketsSchemasUsers1606261705432 implements MigrationInterf
     name = 'AddBallsBasketsSchemasUsers1606261705432'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "schema" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "details" jsonb NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "PK_4560fb648e43aaca39514a74f5c" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "schema" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "detail" jsonb NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "PK_4560fb648e43aaca39514a74f5c" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "schema_to_basket_priority_enum" AS ENUM('1', '2', '3', '4', '5')`);
         await queryRunner.query(`CREATE TABLE "schema_to_basket" ("basketId" integer NOT NULL, "schemaId" integer NOT NULL, "priority" "schema_to_basket_priority_enum" NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "PK_9716d5ebddebdf0c2479142b69c" PRIMARY KEY ("basketId", "schemaId", "priority"))`);
         await queryRunner.query(`CREATE TABLE "basket" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "deleted" boolean NOT NULL DEFAULT false, "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "PK_895e6f44b73a72425e434a614cc" PRIMARY KEY ("id"))`);

@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 import { Ball } from '../../balls/entities/ball.entity'
 import { SchemaToBasket } from '../../schemas/entities/schema-to-basket.entity'
 
@@ -23,11 +31,13 @@ export class Basket {
     () => SchemaToBasket,
     schemaToBasket => schemaToBasket.basket
   )
+  @JoinTable()
   schemaToBaskets: SchemaToBasket[]
 
   @OneToMany(
     () => Ball,
     ball => ball.basket
   )
+  @JoinTable()
   balls: Ball[]
 }

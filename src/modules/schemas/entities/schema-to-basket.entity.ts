@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm'
+import { CreateDateColumn, Entity, JoinTable, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 import { Basket } from '../../baskets/entities/basket.entity'
 import { PrioritiesEnumOpenApi, Priority } from '../constants/priorities'
 import { Schema } from './schema.entity'
@@ -28,11 +28,13 @@ export class SchemaToBasket {
     () => Schema,
     schema => schema.schemaToBaskets
   )
+  @JoinTable()
   schema: Schema
 
   @ManyToOne(
     () => Basket,
     basket => basket.schemaToBaskets
   )
+  @JoinTable()
   basket: Basket
 }

@@ -37,12 +37,12 @@ export class Ball {
     basket => basket.balls
   )
   @JoinTable()
-  basket: Basket[]
+  basket: Basket
 
   @ManyToOne(
     () => User,
     user => user.balls
   )
   @JoinTable()
-  user: User[]
+  user: User
 }

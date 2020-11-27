@@ -1,19 +1,4 @@
-import { IsDefined, IsNotEmpty } from 'class-validator'
 import { Materials, MaterialsEnumOpenApi } from '../constants/materials'
-
-export class CreateBallDetailDto {
-  @IsDefined()
-  color: string
-
-  @IsDefined()
-  size: number
-
-  @IsNotEmpty()
-  material: Materials
-
-  @IsNotEmpty()
-  hollow: boolean
-}
 
 export interface Detail {
   color: string,

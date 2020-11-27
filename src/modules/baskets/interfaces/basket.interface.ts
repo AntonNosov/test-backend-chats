@@ -1,3 +1,5 @@
 export interface Basket {
-  name: string;
+  id?: number;
+  name?: string;
+  schemas?: object[];
 }

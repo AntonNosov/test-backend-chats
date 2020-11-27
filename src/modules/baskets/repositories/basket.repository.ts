@@ -1,5 +1,6 @@
 import { NotFoundException } from '@nestjs/common'
 import { EntityRepository, FindManyOptions, InsertResult, Repository } from 'typeorm'
+import { SchemaToBasket } from '../../schemas/entities/schema-to-basket.entity'
 import { Basket } from '../entities/basket.entity'
 import { Basket as BasketInterface } from '../interfaces/basket.interface'
 
@@ -21,8 +22,14 @@ export class BasketRepository extends Repository<Basket> {
     return this.findOne(id)
   }
 
-  createOne(basket: BasketInterface): Promise<InsertResult> {
-    return this.insert(basket)
+  async createOne(basket: BasketInterface): Promise<InsertResult[]> {
+    const basketRow = await this.save(basket)
+    return Promise.all(basket.schemas.map((schema: any) => this.createQueryBuilder()
+      .insert()
+      .into(SchemaToBasket)
+      .values({ basketId: basketRow.id, schemaId: schema.id, priority: schema.priority })
+      .execute()
+    ))
   }
 
   async updateOne(id: number, basket: BasketInterface): Promise<Basket> {

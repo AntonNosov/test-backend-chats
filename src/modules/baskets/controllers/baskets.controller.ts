@@ -51,8 +51,8 @@ export class BasketsController {
 
   @Post()
   @Roles(getAdminRoles())
-  @UseInterceptors(ResultInterceptor)
-  create(@Body(ValidationPipe) createBasketDto: CreateBasketDto): Promise<InsertResult> {
+  @UseInterceptors()
+  create(@Body(ValidationPipe) createBasketDto: CreateBasketDto): Promise<InsertResult[]> {
     return this.basketsService.create(createBasketDto)
   }
 

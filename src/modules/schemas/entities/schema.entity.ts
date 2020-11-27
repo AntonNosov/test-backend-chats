@@ -15,7 +15,7 @@ export class Schema {
     array: false,
     nullable: false
   })
-  details: Detail
+  detail: Detail
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date
