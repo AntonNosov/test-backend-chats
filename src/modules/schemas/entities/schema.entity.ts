@@ -27,5 +27,5 @@ export class Schema {
     () => SchemaToBasket,
     schemaToBasket => schemaToBasket.schema
   )
-  schemaToBaskets: SchemaToBasket[]
+  schemasToBasket: SchemaToBasket[]
 }

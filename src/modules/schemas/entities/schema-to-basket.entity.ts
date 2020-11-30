@@ -26,14 +26,14 @@ export class SchemaToBasket {
 
   @ManyToOne(
     () => Schema,
-    schema => schema.schemaToBaskets
+    schema => schema.schemasToBasket
   )
   @JoinTable()
   schema: Schema
 
   @ManyToOne(
     () => Basket,
-    basket => basket.schemaToBaskets
+    basket => basket.schemasToBasket
   )
   @JoinTable()
   basket: Basket

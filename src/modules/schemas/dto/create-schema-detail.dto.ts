@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumberString } from 'class-validator'
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber } from 'class-validator'
 import { Materials } from '../constants/materials'
 
 export class CreateSchemaDetailDto {
@@ -6,7 +6,7 @@ export class CreateSchemaDetailDto {
   color: string
 
   @IsNotEmpty()
-  @IsNumberString()
+  @IsNumber()
   size: number
 
   @IsNotEmpty()

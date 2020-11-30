@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsDefined, Length } from 'class-validator'
+import { Type } from 'class-transformer'
+import { ArrayNotEmpty, IsDefined, Length, ValidateNested } from 'class-validator'
+import { CreateSchemaToBasketDto } from '../../schemas/dto/create-schema-to-basket.dto'
+import { SchemaToBasketOpenApi } from '../../schemas/interfaces/schema-to-basket.interface'
 
 export class CreateBasketDto {
   @ApiProperty({ description: 'Name of basket', required: true })
@@ -7,7 +10,18 @@ export class CreateBasketDto {
   @IsDefined()
   name: string
 
-  @ApiProperty({ description: 'Schema to basket', required: true })
+  @ApiProperty({
+    description: 'Schema to basket',
+    required: true,
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: SchemaToBasketOpenApi
+    }
+  })
   @IsDefined()
-  schemas: object[]
+  @ArrayNotEmpty()
+  @ValidateNested()
+  @Type(() => CreateSchemaToBasketDto)
+  schemasToBasket: CreateSchemaToBasketDto[]
 }

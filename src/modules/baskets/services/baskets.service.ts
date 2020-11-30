@@ -23,7 +23,7 @@ export class BasketsService {
     return this.basketRepository.findById(id)
   }
 
-  create(createBasketDto: CreateBasketDto): Promise<InsertResult[]> {
+  create(createBasketDto: CreateBasketDto): Promise<Basket> {
     return this.basketRepository.createOne(createBasketDto)
   }
 

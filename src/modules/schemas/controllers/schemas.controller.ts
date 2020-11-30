@@ -18,7 +18,7 @@ import { ListAllEntities } from '../../../common/dto/listall-query-params.dto'
 import { QueryFailedExceptionFilter } from '../../../common/exception-filters/query-failed.exception-filter'
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard'
 import { RolesGuard } from '../../../common/guards/roles.guard'
-import { FindAllInterceptor, FindOneInterceptor, ResultInterceptor } from '../../../common/interceptors'
+import { FindAllInterceptor, FindOneInterceptor, CreateOneInterceptor } from '../../../common/interceptors'
 import { ValidationPipe } from '../../../common/validations/validation.pipe'
 import { getAdminRoles } from '../../users/constants/Roles'
 import { CreateSchemaDto } from '../dto/create-schema.dto'
@@ -49,7 +49,7 @@ export class SchemasController {
   }
 
   @Post()
-  @UseInterceptors(ResultInterceptor)
+  @UseInterceptors(CreateOneInterceptor)
   create(@Body(ValidationPipe) createSchemaDto: CreateSchemaDto): Promise<InsertResult> {
     return this.schemasService.create(createSchemaDto)
   }

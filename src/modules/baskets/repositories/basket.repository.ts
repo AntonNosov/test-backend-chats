@@ -1,19 +1,12 @@
-import { NotFoundException } from '@nestjs/common'
-import { EntityRepository, FindManyOptions, InsertResult, Repository } from 'typeorm'
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { EntityRepository, FindManyOptions, getConnection, Repository } from 'typeorm'
 import { SchemaToBasket } from '../../schemas/entities/schema-to-basket.entity'
+import { SchemaToBasket as SchemaToBasketInterface } from '../../schemas/interfaces/schema-to-basket.interface'
 import { Basket } from '../entities/basket.entity'
 import { Basket as BasketInterface } from '../interfaces/basket.interface'
 
 @EntityRepository(Basket)
 export class BasketRepository extends Repository<Basket> {
-  private static updateBasket(basketRow: Basket, basket: BasketInterface): void {
-    Object.keys(basketRow).forEach(field => {
-      if (typeof basket[field] === 'undefined' || field === 'createdAt') return
-      basketRow[field] = basket[field]
-    })
-    basketRow.updatedAt = new Date()
-  }
-
   findAll(query: FindManyOptions<Basket>): Promise<[ Basket[], number ]> {
     return this.findAndCount({ ...query, order: { id: 'DESC' } })
   }
@@ -22,27 +15,32 @@ export class BasketRepository extends Repository<Basket> {
     return this.findOne(id)
   }
 
-  async createOne(basket: BasketInterface): Promise<InsertResult[]> {
-    const basketRow = await this.save(basket)
-    return Promise.all(basket.schemas.map((schema: any) => this.createQueryBuilder()
-      .insert()
-      .into(SchemaToBasket)
-      .values({ basketId: basketRow.id, schemaId: schema.id, priority: schema.priority })
-      .execute()
-    ))
+  async createOne(basket: BasketInterface): Promise<Basket> {
+    let basketRow = this.create(basket)
+    await getConnection().transaction(async transactionalEntityManager => {
+      basketRow = await transactionalEntityManager.save(basketRow)
+      await Promise.all(basket.schemasToBasket.map((schemaToBasket: SchemaToBasketInterface) => {
+        const schemaRow = new SchemaToBasket()
+        Object.keys(schemaToBasket).forEach(field => (schemaRow[field] = schemaToBasket[field]))
+        schemaRow.basketId = basketRow.id
+        return transactionalEntityManager.save(schemaRow)
+      }))
+    })
+    if (!basketRow.id) throw new InternalServerErrorException('Basket is not created')
+    return this.findOne(basketRow.id, { relations: [ 'schemasToBaskets' ] })
   }
 
   async updateOne(id: number, basket: BasketInterface): Promise<Basket> {
-    const basketRow = await this.findOne(id)
+    const basketRow = await this.findOne(id, { relations: [ 'schemasToBasket' ] })
     if (!basketRow) throw new NotFoundException('Basket is not found')
-    BasketRepository.updateBasket(basketRow, basket)
-    return this.save(basketRow)
-  }
-
-  async createOrUpdate(basket: BasketInterface, condition: object): Promise<Basket> {
-    const basketRow = await this.findOne(condition)
-    if (!basketRow) return this.save(basket)
-    BasketRepository.updateBasket(basketRow, basket)
+    Object.keys(basketRow).forEach(field => {
+      if (typeof basket[field] === 'undefined' || field === 'createdAt') return
+      field === 'schemasToBasket'
+        ? basketRow[field] = basket[field].map(schemaToBasket => ({ basketId: basketRow.id, ...schemaToBasket }))
+        : basketRow[field] = basket[field]
+    })
+    basketRow.updatedAt = new Date()
+    console.log(basketRow)
     return this.save(basketRow)
   }
 }

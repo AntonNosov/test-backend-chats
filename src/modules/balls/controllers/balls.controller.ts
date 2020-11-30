@@ -18,7 +18,7 @@ import { ListAllEntities } from '../../../common/dto/listall-query-params.dto'
 import { QueryFailedExceptionFilter } from '../../../common/exception-filters/query-failed.exception-filter'
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard'
 import { RolesGuard } from '../../../common/guards/roles.guard'
-import { FindAllInterceptor, FindOneInterceptor, ResultInterceptor } from '../../../common/interceptors'
+import { FindAllInterceptor, FindOneInterceptor, CreateOneInterceptor } from '../../../common/interceptors'
 import { ValidationPipe } from '../../../common/validations/validation.pipe'
 import { getAdminRoles, getAllRoles } from '../../users/constants/Roles'
 import { CreateBallDto } from '../dto/create-ball.dto'
@@ -50,7 +50,7 @@ export class BallsController {
 
   @Post()
   @Roles(getAllRoles())
-  @UseInterceptors(ResultInterceptor)
+  @UseInterceptors(CreateOneInterceptor)
   create(@Body(ValidationPipe) createBallDto: CreateBallDto): Promise<InsertResult> {
     return this.ballsService.create(createBallDto)
   }

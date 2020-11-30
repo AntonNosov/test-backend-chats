@@ -32,7 +32,7 @@ export class Basket {
     schemaToBasket => schemaToBasket.basket
   )
   @JoinTable()
-  schemaToBaskets: SchemaToBasket[]
+  schemasToBasket: SchemaToBasket[]
 
   @OneToMany(
     () => Ball,
